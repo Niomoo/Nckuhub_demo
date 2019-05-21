@@ -259,7 +259,21 @@ router.post('/report/:id', function (req, res) {
 
 /*report post */
 router.post('/setWish/:userID', function (req, res) {
-    var userID = config.userId;
+    // db.DeleteByColumn 已經寫在db
+    // 尚未檢查id
+    var userID = 1566;
+    var courseID;
+    var sql_insert;
+    var sql_delete = 'delete from wishList where userID = ' + userID;
+    db.Query(sql_delete, function(){
+        for(var i in req.body['now_wishlist']){
+            courseID = req.body['now_wishlist'][i];
+            sql_insert = 'insert into wishList(userID,courseID) value (' + userID + ',' + courseID + ')';
+            db.Query(sql_insert, function(){
+            });
+        }
+    });
+    // consolog.log(req.body)
     /**
      * [ BackendHw ]
      *  0. 此 API 是用來記錄下 user 的願望課程，因為需要紀錄是哪個 user 的，所以先幫各位假定了一個
@@ -278,7 +292,8 @@ router.post('/setWish/:userID', function (req, res) {
 });
 
 router.post('/setTable/:userID',  function (req, res) {
-    var userID = config.userId;
+    var userID = 1566;
+    
     /**
      * [ BackendHw ]
      *  0. 此 API 是用來記錄下 user 的自己排的課表，因為需要紀錄是哪個 user 的，所以先幫各位假定了一個

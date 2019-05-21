@@ -22,7 +22,18 @@ var db = require('../model/db');
 
 /* index */
 router.get('/', function (req, res) {
-    
+    db.Query(`select * from course_new order by comment_num DESC`, function(courses){
+        for(var i in courses){
+         courses[i]['選課序號'] = courses[i]['選課序號'].replace(courses[i]['系號'], '');
+            var new_name = courses[i]['系所名稱'].replace(/[a-zA-Z]/g, ""); // 把系所的英文名稱拿掉（但是要避免全英文的系所）
+            if(new_name != ""){
+                courses[i]['系所名稱'] = new_name;
+            }
+        }
+        res.send({
+            'courses': courses,
+        });
+    });
 });
 
 
@@ -126,13 +137,15 @@ router.get('/:id', function (req, res) {
         /**
         [backend HW]
          *  1. 檢查是否有這個 :id
-         *  2. 接著要是這個課程被搜尋了，那麼應該要在 count 上面 +1 表示搜尋次數
+         *  2. 接著要是這個課程被搜尋了，那麼應該要在 count 上面 +1 表示搜尋次數 (點擊率在course_new)
          *  3. 接著依據這個 :id 去 course_new 找出該課程的資訊
+         *     進course_new找id -> 抓出課程名稱、老師 -> (3)進去post -> teacher=? course=?
          *  4. 將 (3) 的這些資訊再去 post 裡面找出他的對應心得
-         *      - Hint: 如果只用課名去 post 找，可能會找到不同老師但是都開相同的課，所以應該要用 1. 課名 2. 老師名 去找
-         *  5. 找完 post 之後還需要找 course_rate，並且依照原本的 response 格式做資料整理
-         *  6. 最後將這些都送回去前端～ 
-         *      - Hint: res.json(data)   
+         *      - Hint: 如果只用課名去 post 找，可能會找到不同老師但是都開相同的課，所以應該要用 1. 課名 2. 老師名 去找心得
+         *  5. 最後將這些都送回去前端～ 
+         *      - Hint: res.json(data)
+         *     前端定義info = 課程資訊   
+         * 
          */
         
         res.send({
@@ -140,8 +153,8 @@ router.get('/:id', function (req, res) {
             "cold": "0",
             "sweet": "0",
             "rate_count": 0,
-            'courseInfo': /* 請填入課程資訊 Object(Json) */,
-            'comment': /* 請填入課程心得的 Array */,
+            'courseInfo': '輸入課程資訊json',
+            'comment': '輸入心得array',
             'rates':[]}
         );
     }
