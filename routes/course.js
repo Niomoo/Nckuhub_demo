@@ -134,6 +134,9 @@ router.get('/:id', function (req, res) {
     if (id.match(/\D/g)) {
         res.redirect('/');
     } else {
+        var sql_count = 'update course_new set count = count + 1 where id = ' + id;
+        db.Query(sql_count,function(){});
+        db.query_post2(id,function(){});
         /**
         [backend HW]
          *  1. 檢查是否有這個 :id
@@ -152,9 +155,15 @@ router.get('/:id', function (req, res) {
             "got": "0",
             "cold": "0",
             "sweet": "0",
-            "rate_count": 0,
-            'courseInfo': '輸入課程資訊json',
-            'comment': '輸入心得array',
+            "rate_count": "0",
+            'courseInfo': res.json({
+                'course_style':courseInfo[0]['course_style'], 
+                'course_need':courseInfo[0]['course_need'], 
+                'exam_style':courseInfo[0]['exam_style'], 
+                'score_style':courseInfo[0]['score_style'], 
+                'report_hw':courseInfo[0]['report_hw']
+            }),
+            'comment': res.json([comment]),
             'rates':[]}
         );
     }
