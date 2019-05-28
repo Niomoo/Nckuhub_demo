@@ -559,7 +559,6 @@ router.post('/report/:id', function (req, res) {
 
 /*report post */
 router.post('/setWish/:userID', function (req, res) {
-    // db.DeleteByColumn 已經寫在db
     var userID = 1566;
     var courseID;
     var sql_insert;
@@ -596,11 +595,12 @@ router.post('/setTable/:userID',  function (req, res) {
     var sql_insert;
     var sql_delete = 'delete from tableList where userID = ' + userID;
     db.Query(sql_delete, function(){
-        for(var i in req.body['now_wishlist']){
-            courseID = req.body['now_wishlist'][i];
-            sql_insert = 'insert into tableList(userID,courseID,userName) value (' + userID + ',' + courseID + ',' + userName + ')';
-            db.Query(sql_insert, function(){});
-        }
+        db.InnerJoin(tableList,courseID,wishList.courseID = tableList.courseID,function(results){
+            for(var i in results){
+                sql_insert = 'insert into tableList(userID,courseID,userName) value (' + userID + ',' + i + ',' + userName + ')';
+                db.Query(sql_insert, function(){});
+            }
+        });
     });
     /**
      * [ BackendHw ]
