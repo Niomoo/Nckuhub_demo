@@ -145,6 +145,7 @@ router.post('/create', function (req, res) {
             res.send(errors);
         } else {
 
+            
         /**
          * [ BackendHw ]
          *  0. 要過以上 2 個檢驗，一個是目前是 user 登入狀態而不是訪客，另一個是填寫心得部分不可以為空，這邊先幫大家寫好囉～
